@@ -5,6 +5,7 @@ import os
 from time import strftime
 import json
 
+
 class JsonProcessor:
     """
     JsonProcessor takes in 3 arguments, an array of domains, an array of cities,
@@ -54,30 +55,29 @@ class JsonProcessor:
         # Used for naming JSON file
         current_time = strftime('%d:%b:%Y-%H:%M:%S')
         current_date = strftime('%d-%b-%Y')
-        
-        try: # Checks to see if 'data' file has been created yet.
+
+        try:  # Checks to see if 'data' file has been created yet.
             os.mkdir('data')
         except FileExistsError:
             pass
 
         path = 'data/{}'.format(current_date)
 
-        try: # Checks if the file for 'current_date' has been created or not.
+        try:  # Checks if the file for 'current_date' has been created or not.
             os.mkdir(path)
         except FileExistsError:
             pass
 
-        with concurrent.futures.ProcessPoolExecutor() as executor: # Multiprocessor 
+        with concurrent.futures.ProcessPoolExecutor() as executor:  # Multiprocessor
             city_dictionaries = executor.map(self.json_data, self.domains, self.cities)
 
             for city_dictionary in city_dictionaries:
-                print(city_dictionary) # Used for debugging
+                print(city_dictionary)  # Used for debugging
 
                 self.search_dictionaries[self.search].update(city_dictionary)
 
                 with open('data/{}/{}_{}.json'.format(current_date, self.search, current_time), 'w') as f:
                     json.dump(self.search_dictionaries, f, indent=2)
-
 
     def json_data(self, domain, city):
         """
@@ -89,7 +89,7 @@ class JsonProcessor:
         each city in self.cities and json_data() returns city_dictionary.
         """
 
-        city_dictionary = {city: {}}        
+        city_dictionary = {city: {}}
 
         SEARCH = scraper.CraigslistSearches(domain)
         posting_titles = SEARCH.posting_title()
@@ -98,14 +98,17 @@ class JsonProcessor:
         posting_details, descriptions = SEARCH.posting_details()
 
         for posting_title, price, url, itter in zip(posting_titles, prices, ad_hrefs, range(len(posting_titles))):
-            if self.car_data == False:
-                name_dictionaries = {posting_title: {'price': price[1:].replace(',', ''), 'url': url}} 
+            if not self.car_data:
+                name_dictionaries = {posting_title: {'price': price[1:].replace(',', ''), 'url': url}}
 
-            elif self.car_data == True:
-                name_dictionaries = {posting_title: {'price': price[1:].replace(',', ''), 'url': url, 'model': None, 'year': None,
-                                             'odometer': None, 'condition': None, 'cylinders': None, 'drive': None,
-                                             'fuel': None, 'paint color': None, 'size': None, 'title status': None,
-                                             'transmission': None, 'type': None, 'VIN': None}}
+            elif self.car_data:
+                name_dictionaries = {posting_title: {'price': price[1:].replace(',', ''), 'url': url, 'model': None,
+                                                     'year': None,
+                                                     'odometer': None, 'condition': None, 'cylinders': None,
+                                                     'drive': None,
+                                                     'fuel': None, 'paint color': None, 'size': None,
+                                                     'title status': None,
+                                                     'transmission': None, 'type': None, 'VIN': None}}
 
             for item in posting_details[itter]:
                 if len(item) == 2:
@@ -117,10 +120,3 @@ class JsonProcessor:
             city_dictionary[city].update(name_dictionaries)
 
         return city_dictionary
-
-
-
-
-
-
-
