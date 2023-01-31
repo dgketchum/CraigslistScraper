@@ -20,23 +20,8 @@ def main():
 
     toyota_search = Searches('toyota%20tacoma', cities, 'cta', filters, car_data=True)
 
-    # result = toyota_search.compile_search()
+    result = toyota_search.compile_search()
 
-    dct = {}
-    ct = 0
-    _files = [os.path.join('data/26-Jan-2023', x) for x in os.listdir('data/26-Jan-2023')]
-    for f in _files:
-        with open(f, 'r') as f_:
-            js = json.load(f_)
-            js = [v for k, v in js.items()][0]
-            for city, d in js.items():
-                if len(d.keys()) > 0:
-                    ct += len(d.keys())
-                    for k, v in d.items():
-
-                        dct.update({})
-    print(ct, 'cars')
-    # dct.update()
 
 
 if __name__ == '__main__':
