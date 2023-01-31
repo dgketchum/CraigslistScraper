@@ -16,12 +16,11 @@ def main():
     """
     df = pd.read_csv('craigslistscraper/city_data/craigslist_cities_list.csv', header=None)
     cities = list(df[0].values)
-    filters = ['&auto_title_status=1']
+    filters = ['&auto_title_status=1', 'purveyor=owner']
 
-    toyota_search = Searches('toyota%20tacoma', cities, 'cta', filters, car_data=True)
+    search = Searches('nissan frontier', cities, 'cta', filters, car_data=True)
 
-    result = toyota_search.compile_search()
-
+    result = search.compile_search()
 
 
 if __name__ == '__main__':
