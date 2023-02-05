@@ -18,7 +18,7 @@ def main():
     cities = list(df[0].values)
     filters = ['&auto_title_status=1', 'purveyor=owner']
 
-    search = Searches('nissan frontier', cities, 'cta', filters, car_data=True)
+    search = Searches('honda civic', cities, 'cta', filters, car_data=True)
 
     result = search.compile_search()
 
